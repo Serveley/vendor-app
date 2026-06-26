@@ -136,17 +136,31 @@ function Dashboard({ vendor, onLogout }) {
   const totalServices = services.length;
 
   return (
-    <Box>
-      <AppBar position="fixed">
+    <Box sx={{ minHeight: '100vh', bgcolor: 'background.default' }}>
+      <AppBar 
+        position="fixed" 
+        elevation={0}
+        sx={{
+          bgcolor: 'rgba(255, 255, 255, 0.8)',
+          backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
+          color: 'text.primary',
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+      >
         <Toolbar>
-          <StoreIcon sx={{ mr: 2 }} />
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Serveley Vendor Portal
+          <Box sx={{ width: 36, height: 36, borderRadius: '8px', bgcolor: 'rgba(99, 102, 241, 0.1)', color: 'primary.main', display: 'flex', alignItems: 'center', justifyContent: 'center', mr: 2 }}>
+            <StoreIcon />
+          </Box>
+          <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: '800', fontFamily: '"Outfit", sans-serif', letterSpacing: '-0.3px' }}>
+            Serveley Portal
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body2">{vendor.businessName || vendor.name}</Typography>
-            <IconButton onClick={handleProfileMenuOpen} color="inherit">
-              <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main' }}>
+            <Typography variant="body2" fontWeight="600" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              {vendor.businessName || vendor.name}
+            </Typography>
+            <IconButton onClick={handleProfileMenuOpen} size="small">
+              <Avatar sx={{ width: 32, height: 32, bgcolor: 'secondary.main', fontWeight: 'bold', fontSize: '0.875rem' }}>
                 {(vendor.name || vendor.email)[0].toUpperCase()}
               </Avatar>
             </IconButton>
@@ -158,122 +172,168 @@ function Dashboard({ vendor, onLogout }) {
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleProfileMenuClose}
+        PaperProps={{ sx: { borderRadius: '12px', mt: 0.5, boxShadow: '0 4px 20px rgba(0,0,0,0.05)' } }}
       >
         <MenuItem onClick={() => { handleProfileMenuClose(); onLogout(); }}>
           <ListItemIcon>
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
-          <Typography>Logout</Typography>
+          <Typography fontWeight="500">Logout</Typography>
         </MenuItem>
       </Menu>
 
-      <Container sx={{ mt: 10, mb: 4 }}>
+      <Container sx={{ mt: 12, mb: 4 }}>
         {message.text && (
-          <Alert severity={message.type} sx={{ mb: 2 }} onClose={() => setMessage({ type: '', text: '' })}>
+          <Alert 
+            severity={message.type} 
+            variant="outlined"
+            sx={{ mb: 3, borderRadius: '12px' }} 
+            onClose={() => setMessage({ type: '', text: '' })}
+          >
             {message.text}
           </Alert>
         )}
 
-        <Grid container spacing={3} sx={{ mb: 3 }}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={4}>
-            <Card>
-              <CardContent>
-                <Typography color="textSecondary" gutterBottom>
-                  Business
+            <Card sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography color="text.secondary" fontWeight="700" sx={{ textTransform: 'uppercase', letterSpacing: '0.8px', fontSize: '0.75rem', mb: 1.5 }}>
+                  Business Partner
                 </Typography>
-                <Typography variant="h5" fontWeight="bold">
+                <Typography variant="h5" fontWeight="800" sx={{ fontFamily: '"Outfit", sans-serif' }}>
                   {vendor.businessName || vendor.name}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Card>
-              <CardContent>
-                <Typography color="textSecondary" gutterBottom>
-                  Services Enabled
+            <Card sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography color="text.secondary" fontWeight="700" sx={{ textTransform: 'uppercase', letterSpacing: '0.8px', fontSize: '0.75rem', mb: 1.5 }}>
+                  Offerings Active
                 </Typography>
-                <Typography variant="h5" fontWeight="bold">
+                <Typography variant="h5" fontWeight="800" sx={{ fontFamily: '"Outfit", sans-serif', color: 'primary.main' }}>
                   {enabledCount} / {totalServices}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} sm={4}>
-            <Card>
-              <CardContent>
-                <Typography color="textSecondary" gutterBottom>
-                  Status
+            <Card sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'translateY(-2px)' } }}>
+              <CardContent sx={{ p: 3 }}>
+                <Typography color="text.secondary" fontWeight="700" sx={{ textTransform: 'uppercase', letterSpacing: '0.8px', fontSize: '0.75rem', mb: 1.5 }}>
+                  Account Status
                 </Typography>
                 <Chip
-                  label={profile?.isActive ? 'Active' : 'Inactive'}
-                  color={profile?.isActive ? 'success' : 'error'}
+                  label={profile?.isActive ? 'Active Partner' : 'Suspended'}
+                  sx={{ 
+                    fontWeight: 'bold', 
+                    borderRadius: '6px',
+                    bgcolor: profile?.isActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                    color: profile?.isActive ? '#10b981' : '#ef4444',
+                    px: 1,
+                    fontSize: '0.85rem'
+                  }}
                 />
               </CardContent>
             </Card>
           </Grid>
         </Grid>
 
-        <Paper>
-          <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)}>
-            <Tab icon={<ServiceIcon />} label="My Services" />
-            <Tab icon={<StoreIcon />} label="Profile" />
+        <Paper 
+          elevation={0}
+          sx={{ 
+            borderRadius: '16px', 
+            border: '1px solid rgba(226, 232, 240, 0.8)', 
+            boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
+            overflow: 'hidden'
+          }}
+        >
+          <Tabs 
+            value={tabValue} 
+            onChange={(e, v) => setTabValue(v)}
+            sx={{
+              borderBottom: '1px solid rgba(226, 232, 240, 0.8)',
+              bgcolor: 'rgba(248, 250, 252, 0.5)',
+              px: 2,
+              '& .MuiTab-root': { py: 2, fontWeight: '600', textTransform: 'none', fontSize: '0.95rem' }
+            }}
+          >
+            <Tab icon={<ServiceIcon fontSize="small" />} iconPosition="start" label="My Services" />
+            <Tab icon={<StoreIcon fontSize="small" />} iconPosition="start" label="Profile Settings" />
           </Tabs>
 
           <TabPanel value={tabValue} index={0}>
-            <Typography variant="h6" gutterBottom>
-              Manage Your Services
+            <Typography variant="h6" fontWeight="700" sx={{ fontFamily: '"Outfit", sans-serif', mb: 0.5 }}>
+              Offerings Setup
             </Typography>
-            <Typography variant="body2" color="textSecondary" sx={{ mb: 3 }}>
-              Toggle services on/off to control which services you offer to customers
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+              Toggle the status of your services to manage what is visible on the client marketplace.
             </Typography>
             
             {loading ? (
-              <CircularProgress />
+              <Box sx={{ py: 4, display: 'flex', justifyContent: 'center' }}>
+                <CircularProgress />
+              </Box>
             ) : (
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Service</TableCell>
-                    <TableCell>Category</TableCell>
-                    <TableCell>Status</TableCell>
-                    <TableCell>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {services.map((service) => (
-                    <TableRow key={service._id || service.service?._id}>
-                      <TableCell>
-                        <Typography fontWeight="medium">
-                          {service.service?.name || 'Unknown Service'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          label={service.service?.category || 'N/A'}
-                          size="small"
-                          color="primary"
-                          variant="outlined"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Chip
-                          icon={service.enabled ? <ActiveIcon /> : <InactiveIcon />}
-                          label={service.enabled ? 'Enabled' : 'Disabled'}
-                          color={service.enabled ? 'success' : 'default'}
-                          size="small"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Switch
-                          checked={service.enabled}
-                          onChange={(e) => handleServiceToggle(service.service._id, e.target.checked)}
-                        />
-                      </TableCell>
+              <TableContainer sx={{ borderRadius: '12px', border: '1px solid rgba(226, 232, 240, 0.8)' }}>
+                <Table>
+                  <TableHead sx={{ bgcolor: 'rgba(248, 250, 252, 0.8)' }}>
+                    <TableRow>
+                      <TableCell sx={{ fontWeight: '700', color: 'text.secondary', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.8px' }}>Service Name</TableCell>
+                      <TableCell sx={{ fontWeight: '700', color: 'text.secondary', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.8px' }}>Category</TableCell>
+                      <TableCell sx={{ fontWeight: '700', color: 'text.secondary', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.8px' }}>Status</TableCell>
+                      <TableCell align="right" sx={{ fontWeight: '700', color: 'text.secondary', textTransform: 'uppercase', fontSize: '0.75rem', letterSpacing: '0.8px', pr: 3 }}>Availability</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {services.map((service) => (
+                      <TableRow 
+                        key={service._id || service.service?._id}
+                        sx={{ 
+                          '&:hover': { bgcolor: 'rgba(99, 102, 241, 0.02)' },
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell sx={{ py: 2.2 }}>
+                          <Typography fontWeight="700" color="text.primary" sx={{ fontSize: '0.95rem' }}>
+                            {service.service?.name || 'Unknown Service'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell sx={{ py: 2.2 }}>
+                          <Chip
+                            label={service.service?.category || 'N/A'}
+                            size="small"
+                            variant="outlined"
+                            sx={{ fontWeight: '600', borderRadius: '6px' }}
+                          />
+                        </TableCell>
+                        <TableCell sx={{ py: 2.2 }}>
+                          <Chip
+                            label={service.enabled ? 'Enabled' : 'Disabled'}
+                            size="small"
+                            sx={{ 
+                              fontWeight: 'bold', 
+                              borderRadius: '6px',
+                              bgcolor: service.enabled ? 'rgba(16, 185, 129, 0.1)' : 'rgba(148, 163, 184, 0.1)',
+                              color: service.enabled ? '#10b981' : '#64748b',
+                              border: 'none'
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="right" sx={{ py: 2.2, pr: 2 }}>
+                          <Switch
+                            checked={service.enabled}
+                            color="primary"
+                            onChange={(e) => handleServiceToggle(service.service._id, e.target.checked)}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             )}
           </TabPanel>
 
